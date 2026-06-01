@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-lg mb-4">
+    <h1 class="display-4">Welcome to Kaam Dhandha</h1>
+    <p class="lead">Connecting Rural Workers with Local Employment Opportunities</p>
+    <hr class="my-4">
+    <p>A digital platform inspired by NREGA and Apna Jobs, helping villagers find government jobs, agricultural work, construction jobs, and skilled opportunities.</p>
+    <div class="mt-4">
+        <a class="btn btn-success btn-lg me-2" href="{{ url_for('auth.register_worker') }}" role="button">
+            <i class="bi bi-person-plus"></i> Register as Worker
+        </a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register_employer') }}" role="button">
+            <i class="bi bi-briefcase"></i> Register as Employer
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-people-fill text-success" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">For Workers</h5>
+                <p class="card-text">Find government jobs, agricultural work, construction jobs, and skilled opportunities in your village.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-briefcase-fill text-primary" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">For Employers</h5>
+                <p class="card-text">Post jobs, find skilled workers, and manage your workforce efficiently.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-graph-up text-info" style="font-size: 3rem;"></i>
+                <h5 class="card-title mt-3">Track Progress</h5>
+                <p class="card-text">Monitor employment records, earnings history, and village development.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Job Categories</h3>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5><i class="bi bi-tree"></i> Agriculture</h5>
+                        <p class="small">Harvesting, Planting, Irrigation, Dairy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <h5><i class="bi bi-hammer"></i> Construction</h5>
+                        <p class="small">Mason, Painter, Carpenter, Labor</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5><i class="bi bi-tools"></i> Services</h5>
+                        <p class="small">Electrician, Plumber, Driver</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5><i class="bi bi-building"></i> Government</h5>
+                        <p class="small">NREGA, Panchayat Projects</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

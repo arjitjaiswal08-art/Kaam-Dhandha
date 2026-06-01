@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ job.title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-secondary">{{ job.category }}</span>
+                    <span class="badge bg-success">{{ job.status }}</span>
+                </div>
+                
+                <h5>Job Description</h5>
+                <p>{{ job.description }}</p>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-currency-rupee"></i> Wage</h6>
+                        <p class="text-success"><strong>₹{{ job.wage }} per {{ job.wage_type }}</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-people"></i> Vacancies</h6>
+                        <p>{{ job.vacancies }} positions</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-geo-alt"></i> Location</h6>
+                        <p>{{ job.location }}, {{ job.village }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-calendar"></i> Posted On</h6>
+                        <p>{{ job.created_at.strftime('%d %B %Y') }}</p>
+                    </div>
+                </div>
+                
+                {% if job.deadline %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-clock"></i> <strong>Application Deadline:</strong> {{ job.deadline.strftime('%d %B %Y') }}
+                </div>
+                {% endif %}
+                
+                {% if job.required_skills %}
+                <h6>Required Skills</h6>
+                <p>
+                    {% for skill in job.required_skills.split(',') %}
+                    <span class="badge bg-info">{{ skill }}</span>
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Employer Details</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ job.employer.name }}</h6>
+                <p class="text-muted">{{ job.employer.business_type }}</p>
+                <p><i class="bi bi-geo-alt"></i> {{ job.employer.village }}</p>
+                <p><i class="bi bi-star-fill text-warning"></i> Rating: {{ job.employer.rating }}/5</p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                {% if existing_application %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-check-circle"></i> You have already applied for this job.
+                        <p class="mb-0 mt-2"><strong>Status:</strong> 
+                            <span class="badge 
+                                {% if existing_application.status == 'accepted' %}bg-success
+                                {% elif existing_application.status == 'rejected' %}bg-danger
+                                {% else %}bg-warning{% endif %}">
+                                {{ existing_application.status }}
+                            </span>
+                        </p>
+                    </div>
+                {% elif job.status != 'open' %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> This job is no longer accepting applications.
+                    </div>
+                {% else %}
+                    <h5>Apply for this Job</h5>
+                    <form method="POST" action="{{ url_for('worker.apply_job', job_id=job.id) }}">
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message to Employer (Optional)</label>
+                            <textarea class="form-control" id="message" name="message" rows="3" placeholder="Tell the employer why you're a good fit..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-send"></i> Apply Now
+                        </button>
+                    </form>
+                {% endif %}
+                
+                <a href="{{ url_for('worker.jobs') }}" class="btn btn-secondary w-100 mt-2">
+                    <i class="bi bi-arrow-left"></i> Back to Jobs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

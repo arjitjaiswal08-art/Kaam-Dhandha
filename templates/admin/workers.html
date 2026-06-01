@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Workers - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-people"></i> Manage Workers</h2>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="Search by name, village, or skills...">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if workers.items %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Village</th>
+                        <th>Skills</th>
+                        <th>Experience</th>
+                        <th>Rating</th>
+                        <th>Jobs Completed</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for worker in workers.items %}
+                    <tr>
+                        <td><strong>{{ worker.name }}</strong></td>
+                        <td>{{ worker.mobile }}</td>
+                        <td>{{ worker.village }}</td>
+                        <td><small>{{ worker.skills[:40] }}...</small></td>
+                        <td>{{ worker.experience }} years</td>
+                        <td>
+                            <i class="bi bi-star-fill text-warning"></i> {{ worker.rating }}
+                        </td>
+                        <td>{{ worker.total_jobs_completed }}</td>
+                        <td>
+                            {% if worker.user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.toggle_user', user_id=worker.user_id) }}" 
+                               class="btn btn-sm btn-warning"
+                               onclick="return confirm('Toggle user status?')">
+                                {% if worker.user.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Workers pagination" class="mt-3">
+    <ul class="pagination justify-content-center">
+        {% if workers.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.workers', page=workers.prev_num, search=search) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in workers.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                <li class="page-item {% if page_num == workers.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.workers', page=page_num, search=search) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if workers.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.workers', page=workers.next_num, search=search) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No workers found.
+</div>
+{% endif %}
+{% endblock %}

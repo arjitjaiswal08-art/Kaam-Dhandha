@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Worker Registration - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-person-plus"></i> Worker Registration</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="mobile" class="form-label">Mobile Number *</label>
+                            <input type="tel" class="form-control" id="mobile" name="mobile" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password *</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="village" class="form-label">Village *</label>
+                            <input type="text" class="form-control" id="village" name="village" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="education" class="form-label">Education</label>
+                            <select class="form-select" id="education" name="education">
+                                <option value="">Select Education</option>
+                                <option value="No Formal Education">No Formal Education</option>
+                                <option value="Primary">Primary</option>
+                                <option value="Secondary">Secondary</option>
+                                <option value="Higher Secondary">Higher Secondary</option>
+                                <option value="Graduate">Graduate</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="experience" class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" id="experience" name="experience" min="0" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Skills (Select all that apply) *</label>
+                        <div class="row">
+                            {% for skill in skills_list %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="skills" value="{{ skill }}" id="skill{{ loop.index }}">
+                                    <label class="form-check-label" for="skill{{ loop.index }}">{{ skill }}</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Register</button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

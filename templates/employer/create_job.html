@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Post New Job - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-plus-circle"></i> Post New Job</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Job Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Job Description *</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat }}">{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="vacancies" class="form-label">Number of Vacancies *</label>
+                            <input type="number" class="form-control" id="vacancies" name="vacancies" min="1" value="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Required Skills</label>
+                        <div class="row">
+                            {% for skill in skills_list %}
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="required_skills" value="{{ skill }}" id="skill{{ loop.index }}">
+                                    <label class="form-check-label" for="skill{{ loop.index }}">{{ skill }}</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="wage" class="form-label">Wage Amount (₹) *</label>
+                            <input type="number" class="form-control" id="wage" name="wage" step="0.01" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="wage_type" class="form-label">Wage Type *</label>
+                            <select class="form-select" id="wage_type" name="wage_type" required>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="per_task">Per Task</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Location *</label>
+                            <input type="text" class="form-control" id="location" name="location" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="village" class="form-label">Village *</label>
+                            <input type="text" class="form-control" id="village" name="village" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Application Deadline</label>
+                        <input type="date" class="form-control" id="deadline" name="deadline">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">Post Job</button>
+                        <a href="{{ url_for('employer.jobs') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

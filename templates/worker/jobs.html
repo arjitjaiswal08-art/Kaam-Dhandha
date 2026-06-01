@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Find Jobs - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-search"></i> Find Jobs</h2>
+<hr>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="all" {% if category == 'all' %}selected{% endif %}>All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="village" class="form-label">Village</label>
+                <input type="text" class="form-control" id="village" name="village" value="{{ village }}" placeholder="Enter village">
+            </div>
+            <div class="col-md-3">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="search" name="search" value="{{ search }}" placeholder="Keywords">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if jobs.items %}
+<div class="row">
+    {% for job in jobs.items %}
+    <div class="col-md-6 mb-3">
+        <div class="card job-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <span class="badge bg-success">₹{{ job.wage }}/{{ job.wage_type }}</span>
+                </div>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-building"></i> {{ job.employer.name }} | 
+                    <i class="bi bi-geo-alt"></i> {{ job.village }}
+                </p>
+                <p class="card-text">{{ job.description[:100] }}...</p>
+                <div class="mb-2">
+                    <span class="badge bg-secondary">{{ job.category }}</span>
+                    <span class="badge bg-info">{{ job.vacancies }} vacancies</span>
+                </div>
+                {% if job.deadline %}
+                <p class="text-muted small"><i class="bi bi-calendar"></i> Apply by: {{ job.deadline.strftime('%d %b %Y') }}</p>
+                {% endif %}
+                <a href="{{ url_for('worker.view_job', job_id=job.id) }}" class="btn btn-primary btn-sm">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Job pagination">
+    <ul class="pagination justify-content-center">
+        {% if jobs.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('worker.jobs', page=jobs.prev_num, category=category, village=village, search=search) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                <li class="page-item {% if page_num == jobs.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('worker.jobs', page=page_num, category=category, village=village, search=search) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if jobs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('worker.jobs', page=jobs.next_num, category=category, village=village, search=search) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No jobs found matching your criteria. Try adjusting your filters.
+</div>
+{% endif %}
+{% endblock %}

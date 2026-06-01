@@ -1,0 +1,84 @@
+/* Kaam Dhandha Custom Styles */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.jumbotron {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.badge {
+    font-size: 0.85rem;
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.stat-card {
+    border-left: 4px solid;
+}
+
+.stat-card.success {
+    border-left-color: #28a745;
+}
+
+.stat-card.primary {
+    border-left-color: #007bff;
+}
+
+.stat-card.info {
+    border-left-color: #17a2b8;
+}
+
+.stat-card.warning {
+    border-left-color: #ffc107;
+}
+
+footer {
+    margin-top: auto;
+}
+
+.job-card {
+    border-left: 4px solid #28a745;
+}
+
+.application-status {
+    font-weight: bold;
+}
+
+.application-status.pending {
+    color: #ffc107;
+}
+
+.application-status.accepted {
+    color: #28a745;
+}
+
+.application-status.rejected {
+    color: #dc3545;
+}

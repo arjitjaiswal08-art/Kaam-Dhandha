@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Jobs - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-file-earmark-text"></i> Manage Jobs</h2>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select" name="category">
+                    <option value="all" {% if category_filter == 'all' %}selected{% endif %}>All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}" {% if category_filter == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" name="status">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                    <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+                    <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if jobs.items %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Employer</th>
+                        <th>Village</th>
+                        <th>Wage</th>
+                        <th>Applications</th>
+                        <th>Status</th>
+                        <th>Posted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs.items %}
+                    <tr>
+                        <td><strong>{{ job.title }}</strong></td>
+                        <td><span class="badge bg-secondary">{{ job.category }}</span></td>
+                        <td>{{ job.employer.name }}</td>
+                        <td>{{ job.village }}</td>
+                        <td class="text-success">₹{{ job.wage }}/{{ job.wage_type }}</td>
+                        <td>{{ job.applications.count() }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if job.status == 'open' %}bg-success
+                                {% elif job.status == 'closed' %}bg-secondary
+                                {% else %}bg-info{% endif %}">
+                                {{ job.status }}
+                            </span>
+                        </td>
+                        <td>{{ job.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Jobs pagination" class="mt-3">
+    <ul class="pagination justify-content-center">
+        {% if jobs.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.jobs', page=jobs.prev_num, category=category_filter, status=status_filter) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                <li class="page-item {% if page_num == jobs.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.jobs', page=page_num, category=category_filter, status=status_filter) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if jobs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.jobs', page=jobs.next_num, category=category_filter, status=status_filter) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No jobs found.
+</div>
+{% endif %}
+{% endblock %}

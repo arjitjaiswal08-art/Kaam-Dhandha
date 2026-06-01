@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Jobs - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-briefcase"></i> My Jobs</h2>
+<hr>
+
+<div class="mb-3">
+    <a href="{{ url_for('employer.create_job') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Post New Job
+    </a>
+    <div class="btn-group ms-2" role="group">
+        <a href="{{ url_for('employer.jobs', status='all') }}" class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">All</a>
+        <a href="{{ url_for('employer.jobs', status='open') }}" class="btn btn-outline-success {% if status_filter == 'open' %}active{% endif %}">Open</a>
+        <a href="{{ url_for('employer.jobs', status='closed') }}" class="btn btn-outline-secondary {% if status_filter == 'closed' %}active{% endif %}">Closed</a>
+        <a href="{{ url_for('employer.jobs', status='completed') }}" class="btn btn-outline-info {% if status_filter == 'completed' %}active{% endif %}">Completed</a>
+    </div>
+</div>
+
+{% if jobs.items %}
+<div class="row">
+    {% for job in jobs.items %}
+    <div class="col-md-12 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>{{ job.title }}</h5>
+                        <p class="text-muted mb-2">
+                            <span class="badge bg-secondary">{{ job.category }}</span>
+                            <span class="badge bg-success">₹{{ job.wage }}/{{ job.wage_type }}</span>
+                            <span class="badge 
+                                {% if job.status == 'open' %}bg-success
+                                {% elif job.status == 'closed' %}bg-secondary
+                                {% else %}bg-info{% endif %}">
+                                {{ job.status }}
+                            </span>
+                        </p>
+                        <p>{{ job.description[:150] }}...</p>
+                        <p class="small text-muted">
+                            <i class="bi bi-geo-alt"></i> {{ job.location }}, {{ job.village }} | 
+                            <i class="bi bi-people"></i> {{ job.vacancies }} vacancies | 
+                            <i class="bi bi-calendar"></i> Posted: {{ job.created_at.strftime('%d %b %Y') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <p class="mb-2">
+                            <strong>{{ job.applications.count() }}</strong> Applications
+                        </p>
+                        <a href="{{ url_for('employer.view_job', job_id=job.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                        {% if job.status == 'open' %}
+                        <form method="POST" action="{{ url_for('employer.complete_job', job_id=job.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Mark this job as completed?')">Complete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Jobs pagination">
+    <ul class="pagination justify-content-center">
+        {% if jobs.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('employer.jobs', page=jobs.prev_num, status=status_filter) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                <li class="page-item {% if page_num == jobs.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('employer.jobs', page=page_num, status=status_filter) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if jobs.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('employer.jobs', page=jobs.next_num, status=status_filter) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No jobs found. <a href="{{ url_for('employer.create_job') }}">Post your first job</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}My Applications - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-file-earmark-text"></i> My Applications</h2>
+<hr>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <select class="form-select" name="status" onchange="this.form.submit()">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="accepted" {% if status_filter == 'accepted' %}selected{% endif %}>Accepted</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if applications.items %}
+<div class="row">
+    {% for app in applications.items %}
+    <div class="col-md-12 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>{{ app.job.title }}</h5>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-building"></i> {{ app.job.employer.name }} | 
+                            <i class="bi bi-geo-alt"></i> {{ app.job.village }}
+                        </p>
+                        <p class="mb-2">
+                            <span class="badge bg-secondary">{{ app.job.category }}</span>
+                            <span class="badge bg-success">₹{{ app.job.wage }}/{{ app.job.wage_type }}</span>
+                        </p>
+                        <p class="small text-muted">Applied on: {{ app.applied_date.strftime('%d %B %Y, %I:%M %p') }}</p>
+                        {% if app.message %}
+                        <p class="small"><strong>Your message:</strong> {{ app.message }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <h4>
+                            <span class="badge 
+                                {% if app.status == 'accepted' %}bg-success
+                                {% elif app.status == 'rejected' %}bg-danger
+                                {% else %}bg-warning{% endif %}">
+                                {{ app.status }}
+                            </span>
+                        </h4>
+                        <a href="{{ url_for('worker.view_job', job_id=app.job_id) }}" class="btn btn-sm btn-primary mt-2">View Job</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Applications pagination">
+    <ul class="pagination justify-content-center">
+        {% if applications.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('worker.my_applications', page=applications.prev_num, status=status_filter) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in applications.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                <li class="page-item {% if page_num == applications.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('worker.my_applications', page=page_num, status=status_filter) }}">{{ page_num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if applications.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('worker.my_applications', page=applications.next_num, status=status_filter) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> You haven't applied to any jobs yet. <a href="{{ url_for('worker.jobs') }}">Browse available jobs</a>
+</div>
+{% endif %}
+{% endblock %}

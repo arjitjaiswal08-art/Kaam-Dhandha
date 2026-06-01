@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+<hr>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-people"></i> Total Workers</h5>
+                <h2>{{ total_workers }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-briefcase"></i> Total Employers</h5>
+                <h2>{{ total_employers }}</h2>
+                {% if pending_employers > 0 %}
+                <small class="badge bg-warning">{{ pending_employers }} Pending</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-file-earmark-text"></i> Active Jobs</h5>
+                <h2>{{ active_jobs }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-check-circle"></i> Completed Jobs</h5>
+                <h2>{{ completed_jobs }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Recent Workers</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Village</th>
+                                <th>Skills</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for worker in recent_workers %}
+                            <tr>
+                                <td>{{ worker.name }}</td>
+                                <td>{{ worker.village }}</td>
+                                <td><small>{{ worker.skills[:30] }}...</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('admin.workers') }}" class="btn btn-sm btn-success">View All Workers</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Pending Employer Approvals</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_employer_list %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employer in pending_employer_list %}
+                            <tr>
+                                <td>{{ employer.name }}</td>
+                                <td>{{ employer.business_type }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.approve_employer', employer_id=employer.id) }}" class="btn btn-sm btn-success">Approve</a>
+                                    <a href="{{ url_for('admin.reject_employer', employer_id=employer.id) }}" class="btn btn-sm btn-danger">Reject</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No pending approvals</p>
+                {% endif %}
+                <a href="{{ url_for('admin.employers') }}" class="btn btn-sm btn-primary">View All Employers</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Recent Job Postings</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Employer</th>
+                                <th>Wage</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in recent_jobs %}
+                            <tr>
+                                <td>{{ job.title }}</td>
+                                <td><span class="badge bg-secondary">{{ job.category }}</span></td>
+                                <td>{{ job.employer.name }}</td>
+                                <td>₹{{ job.wage }}/{{ job.wage_type }}</td>
+                                <td><span class="badge bg-success">{{ job.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('admin.jobs') }}" class="btn btn-sm btn-info">View All Jobs</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

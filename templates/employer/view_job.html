@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ job.title }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-secondary">{{ job.category }}</span>
+                    <span class="badge 
+                        {% if job.status == 'open' %}bg-success
+                        {% elif job.status == 'closed' %}bg-secondary
+                        {% else %}bg-info{% endif %}">
+                        {{ job.status }}
+                    </span>
+                </div>
+                
+                <h5>Job Description</h5>
+                <p>{{ job.description }}</p>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-currency-rupee"></i> Wage</h6>
+                        <p class="text-success"><strong>₹{{ job.wage }} per {{ job.wage_type }}</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-people"></i> Vacancies</h6>
+                        <p>{{ job.vacancies }} positions</p>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-geo-alt"></i> Location</h6>
+                        <p>{{ job.location }}, {{ job.village }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-calendar"></i> Posted On</h6>
+                        <p>{{ job.created_at.strftime('%d %B %Y') }}</p>
+                    </div>
+                </div>
+                
+                {% if job.required_skills %}
+                <h6>Required Skills</h6>
+                <p>
+                    {% for skill in job.required_skills.split(',') %}
+                    <span class="badge bg-info">{{ skill }}</span>
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Job Actions</h5>
+            </div>
+            <div class="card-body">
+                {% if job.status == 'open' %}
+                <form method="POST" action="{{ url_for('employer.complete_job', job_id=job.id) }}">
+                    <button type="submit" class="btn btn-success w-100 mb-2" onclick="return confirm('Mark this job as completed?')">
+                        <i class="bi bi-check-circle"></i> Mark as Completed
+                    </button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('employer.jobs') }}" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Back to My Jobs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Applications ({{ applications|length }})</h5>
+            </div>
+            <div class="card-body">
+                {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Worker Name</th>
+                                <th>Village</th>
+                                <th>Skills</th>
+                                <th>Experience</th>
+                                <th>Rating</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                            <tr>
+                                <td><strong>{{ app.worker.name }}</strong></td>
+                                <td>{{ app.worker.village }}</td>
+                                <td><small>{{ app.worker.skills[:30] }}...</small></td>
+                                <td>{{ app.worker.experience }} years</td>
+                                <td>
+                                    <i class="bi bi-star-fill text-warning"></i> {{ app.worker.rating }}
+                                </td>
+                                <td>{{ app.applied_date.strftime('%d %b %Y') }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if app.status == 'accepted' %}bg-success
+                                        {% elif app.status == 'rejected' %}bg-danger
+                                        {% else %}bg-warning{% endif %}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if app.status == 'pending' %}
+                                    <a href="{{ url_for('employer.accept_application', application_id=app.id) }}" 
+                                       class="btn btn-sm btn-success" 
+                                       onclick="return confirm('Accept this application?')">Accept</a>
+                                    <a href="{{ url_for('employer.reject_application', application_id=app.id) }}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Reject this application?')">Reject</a>
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if app.message %}
+                            <tr>
+                                <td colspan="8" class="bg-light">
+                                    <small><strong>Message:</strong> {{ app.message }}</small>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No applications received yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

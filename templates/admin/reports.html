@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-graph-up"></i> Employment Reports & Analytics</h2>
+<hr>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Village-wise Worker Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Village</th>
+                                <th>Workers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for village, count in village_stats %}
+                            <tr>
+                                <td>{{ village }}</td>
+                                <td><strong>{{ count }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Earnings by Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Total Earnings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, earnings in earnings_by_category %}
+                            <tr>
+                                <td>{{ category }}</td>
+                                <td class="text-success"><strong>₹{{ "%.2f"|format(earnings or 0) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Top Performing Workers</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Village</th>
+                                <th>Skills</th>
+                                <th>Rating</th>
+                                <th>Jobs Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for worker in top_workers %}
+                            <tr>
+                                <td><strong>{{ loop.index }}</strong></td>
+                                <td>{{ worker.name }}</td>
+                                <td>{{ worker.village }}</td>
+                                <td><small>{{ worker.skills[:40] }}...</small></td>
+                                <td>
+                                    <i class="bi bi-star-fill text-warning"></i> {{ worker.rating }}
+                                </td>
+                                <td><strong>{{ worker.total_jobs_completed }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Top Employers</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Business Type</th>
+                                <th>Village</th>
+                                <th>Rating</th>
+                                <th>Jobs Posted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employer in top_employers %}
+                            <tr>
+                                <td><strong>{{ loop.index }}</strong></td>
+                                <td>{{ employer.name }}</td>
+                                <td>{{ employer.business_type }}</td>
+                                <td>{{ employer.village }}</td>
+                                <td>
+                                    <i class="bi bi-star-fill text-warning"></i> {{ employer.rating }}
+                                </td>
+                                <td><strong>{{ employer.jobs.count() }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

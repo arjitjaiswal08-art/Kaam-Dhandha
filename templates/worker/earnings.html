@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Earnings History - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-currency-rupee"></i> Earnings History</h2>
+<hr>
+
+<div class="card mb-4">
+    <div class="card-body text-center">
+        <h3 class="text-success">Total Earnings</h3>
+        <h1 class="display-4">₹{{ "%.2f"|format(total_earnings) }}</h1>
+    </div>
+</div>
+
+{% if history %}
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Employment History</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Employer</th>
+                        <th>Duration</th>
+                        <th>Earning</th>
+                        <th>Rating</th>
+                        <th>Completion Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in history %}
+                    <tr>
+                        <td>{{ record.job.title }}</td>
+                        <td>{{ record.employer.name }}</td>
+                        <td>
+                            {% if record.start_date and record.completion_date %}
+                            {{ (record.completion_date - record.start_date).days }} days
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                        <td class="text-success"><strong>₹{{ "%.2f"|format(record.earning) }}</strong></td>
+                        <td>
+                            {% if record.worker_rating %}
+                            {% for i in range(5) %}
+                                {% if i < record.worker_rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <span class="text-muted">Not rated</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ record.completion_date.strftime('%d %b %Y') if record.completion_date else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No employment history yet. Complete jobs to see your earnings here.
+</div>
+{% endif %}
+{% endblock %}

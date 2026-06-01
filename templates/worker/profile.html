@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Kaam Dhandha{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-person-circle"></i> My Profile</h2>
+<hr>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-circle text-success" style="font-size: 5rem;"></i>
+                <h4 class="mt-3">{{ worker.name }}</h4>
+                <p class="text-muted">{{ worker.village }}</p>
+                <div class="mb-2">
+                    {% for i in range(5) %}
+                        {% if i < worker.rating %}
+                            <i class="bi bi-star-fill text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-star text-warning"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="text-muted">({{ worker.rating }})</span>
+                </div>
+                <p><strong>{{ worker.total_jobs_completed }}</strong> Jobs Completed</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Profile Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Name:</strong>
+                        <p>{{ worker.name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Mobile:</strong>
+                        <p>{{ worker.mobile }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Village:</strong>
+                        <p>{{ worker.village }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Education:</strong>
+                        <p>{{ worker.education or 'Not specified' }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Experience:</strong>
+                        <p>{{ worker.experience }} years</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Skills:</strong>
+                        <p>
+                            {% for skill in worker.skills.split(',') %}
+                            <span class="badge bg-info">{{ skill }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> To update your profile, please contact the admin.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
