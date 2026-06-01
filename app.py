@@ -82,8 +82,10 @@ def create_default_admin():
         db.session.commit()
         print('Default admin created: admin@kaamdhandha.com / admin123')
 
+# Create app instance for gunicorn
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     # Use environment variable for debug mode
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     port = int(os.environ.get('PORT', 5000))
