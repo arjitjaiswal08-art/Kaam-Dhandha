@@ -33,7 +33,7 @@ git branch -M main
 echo ""
 echo "Adding remote repository..."
 git remote remove origin 2>/dev/null || true
-git remote add origin https://github.com/arjitjaiswal08-arj/Kaam-Dhandha.git
+git remote add origin https://github.com/arjitjaiswal08-art/Kaam-Dhandha.git
 
 # Push to GitHub
 echo ""
@@ -45,7 +45,7 @@ echo "========================================="
 echo "  ✓ Successfully pushed to GitHub!"
 echo "========================================="
 echo ""
-echo "Your repository: https://github.com/arjitjaiswal08-arj/Kaam-Dhandha"
+echo "Your repository: https://github.com/arjitjaiswal08-art/Kaam-Dhandha"
 echo ""
 echo "Next steps:"
 echo "1. Go to https://render.com"
